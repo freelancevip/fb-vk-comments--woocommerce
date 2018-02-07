@@ -17,6 +17,7 @@ class FB_Vk_Comments_Woocommerce {
 	private $options;
 
 	function __construct( $options ) {
+
 		$this->options = $options;
 		if ( $options['vk']['enabled'] ) {
 			add_action( 'wp_head', array( $this, 'vk_script' ) );
@@ -77,9 +78,14 @@ class FB_Vk_Comments_Woocommerce {
 	}
 
 	function template( $content ) {
-		ob_start();
-		include( plugin_dir_path( __FILE__ ) . 'template.php' );
+		$queried_object = get_queried_object();
+		if ( isset( $queried_object->post_type ) && $queried_object->post_type == 'product' ) {
+			ob_start();
+			include( plugin_dir_path( __FILE__ ) . 'template.php' );
 
-		return $content . ob_get_clean();
+			return $content . ob_get_clean();
+		}
+
+		return $content;
 	}
 }
